@@ -1,0 +1,232 @@
+{% extends 'BasePage/interface_base.html' %}
+{% load staticfiles %}
+{% load static%}
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/quicktest.css' %}"/>
+{% endblock %}
+{% block js %}
+    <script src="{% static 'js/format_json.js' %}"></script>
+    <script src="{% static 'js/quicktest.js' %}"></script>
+    <script src="{% static 'js/interface_list.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+    <!--面包屑导航-->
+    <div id="index_mian">
+        <ol class="breadcrumb">
+            <li><a href="#">首页</a></li>
+            <li>接口管理</li>
+            <li class="active">快捷测试</li>
+        </ol>
+    </div>
+    <!--左边面板-->
+    <div class="panel panel-success lef_panel" style="margin-left: 5px">
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-file"></span> 快捷测试(仅支持返回值为Json格式)
+            <div class="btn-group btn-group-xs" style="float: right">
+                <button type="button" class="btn btn-success"
+                        id="submitBTN" data-container="body" data-toggle="popover" data-placement="left" data-html="true">
+                    <span class="glyphicon glyphicon-send"></span> 点击运行
+                </button>
+            </div>
+        </div>
+
+        <!--接口参数-->
+        <div class="panel-body">
+            <form class="bs-example bs-example-form" role="form">
+                <div class="input-group">
+                    <span class="input-group-addon">接口URL</span>
+                    <input type="text" class="form-control" id="interface_url" placeholder="请输入接口URL"/>
+                    <span class="input-group-addon" style="
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+    padding-left: 0px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+">
+                    <select class=" btn-default dropdown-toggle " id="interface_type" style="
+    border-bottom-width: 1px;
+    border-top-width: 1px;
+    height: 32px;
+">
+                        <option value="1">POST</option>
+                        <option value="0">GET</option>
+                    </select>
+                </span>
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">请求参数</span>
+                    <textarea class="form-control" id="param_info" placeholder="请输入参数"></textarea>
+                </div>
+            </form>
+            <!--请求头添加-->
+            <div class="breadcrumb" id="interface_header">
+                <span class="glyphicon glyphicon-list-alt"></span>请求头：
+            </div>
+            <ul id="interface_headers" style="margin-top: 10px">
+                <li class="input-group" style="width: 100%;padding-top: 10px">
+                    <select class="btn btn-default dropdown-toggle" id="header_field_01">
+                        <option value="1" selected>Content-Type</option>
+                    </select>
+                    <select class="btn btn-default dropdown-toggle" id="check_header0">
+                        <option value="1" selected>=</option>
+                    </select>
+                    <select class="btn btn-default dropdown-toggle" id="header_value_01">
+                        <option value="1" selected>application/x-www-form-urlencoded</option>
+                        <option value="2" selected>application/json</option>
+                    </select>
+                </li>
+                <li class="input-group" style="width: 100%;padding-top: 10px">
+                    <input type="text" class="form-control" placeholder="请输入请求头" rel="external nofollow" id="header_field_1"
+                           style="width:30%;"/>
+                    <select class="btn btn-default dropdown-toggle" id="check_header">
+                        <option value="1" selected>=</option>
+                    </select>
+                    <input type="text" class="form-control" placeholder="请输入值" id="header_value_1"
+                           style="width:47%; float: left"/>
+                    <span class="input-group-btn" style="width: 30px;display: block;float: left">
+                    <button class="btn btn-default" type="button" rel="external nofollow" id="headerAddMoreFileBox">+</button>
+                </span>
+                </li>
+            </ul>
+            <!--检查点添加-->
+            <div class="breadcrumb" id="checking">
+                <span class="glyphicon glyphicon-list-alt"></span>检查点：
+            </div>
+
+            <ul>
+                <li style="padding-top: 10px">
+                    <input type="text" class="form-control" placeholder="请输入等于检查点,格式如code:200  多个用;分隔" id="checkequal" style="width:100%;"/>
+                </li>
+                <li style="padding-top: 10px">
+                    <input type="text" class="form-control" placeholder="请输入不等于检查点,格式如code:200  多个用;分隔" id="checknotequal" style="width:100%;"/>
+                </li>
+            </ul>
+
+            <!--
+            <ul id="InputsWrapper" style="margin-top: 10px">
+                <li class="input-group" style="width: 100%;padding-top: 10px">
+                    <input type="text" class="form-control" placeholder="请输入参数名" rel="external nofollow" id="field_1"
+                           style="width:30%;"/>
+                    <select class="btn btn-default dropdown-toggle" id="check_1">
+                        <option value="1">=</option>
+                        <option value="2"><></option>
+                        <option value="3">包含</option>
+                        <option value="4">不包含</option>
+                    </select>
+                    <input type="text" class="form-control" placeholder="请输入参数值" id="field_value_1"
+                           style="width:41%; float: left"/>
+                    <span class="input-group-btn" style="width: 30px;display: block;float: left">
+                    <button class="btn btn-default" type="button" rel="external nofollow" id="AddMoreFileBox">+</button>
+                </span>
+                </li>
+            </ul>-->
+        </div>
+    </div>
+
+    <!--右面板-->
+    <div class="panel panel-info right_panel" style="margin-right: 5px">
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-list"></span> 运行结果:
+            <div class="btn-group btn-group-xs" style="float: right">
+                <button type="button" class="btn btn-info" id="saveBTN" data-toggle="modal" data-target="#myModal">
+                    <span class="glyphicon glyphicon-floppy-disk"></span> 点击保存
+                </button>
+            </div>
+        </div>
+        <div class="panel-body">
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active">
+                    <a href="#json_result" data-toggle="tab">报文结果</a>
+                </li>
+                <li><a href="#check_result" data-toggle="tab">检查点结果</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade in active scroll_bar" id="json_result"></div>
+                <div class="tab-pane fade" id="check_result">
+                    <div class="tab-pane fade in active scroll_bar" id="check_info">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>检查点内容</th>
+                                <th>检查条件</th>
+                                <th>校验结果</th>
+                            </tr>
+                            </thead>
+                            <tbody id="check_body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <input type="hidden" id="interfaceid" value="0"/>
+    <input type="hidden" id="paramid" value="0"/>
+    <!-- 保存时模态框 -->
+    <div class="modal" id="update_Modle" tabindex="-1" aria-labelledby="title_id" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="title_id">保存接口</h4>
+                </div>
+                <div class="modal-body">
+                    <form id = "interface_dsc">
+                        <div class="input-group input-group-sm">
+
+                            <span class="input-group-addon" id="sizing-addon3">项目名称</span>
+                            <select class="form-control"   id="pname" name="pname">
+                                <option>--请选择--</option>
+                                {% for project in pro_content  %}
+                                    <option  value="{{ project.pnumber }}">{{ project.pname }}</option>
+                                {% endfor %}
+
+                            </select>
+
+                            <span class="input-group-addon" id="sizing-addon4">模块名称</span>
+                            <select class="form-control"   id="mname" name="mname">
+                                <option>--请选择--</option>
+                            </select>
+
+                            <span class="input-group-addon" id="sizing-addon2">请求方式</span>
+                            <select id="type" class="form-control" name="type"><option value="0">GET</option><option value="1">POST</option>
+                            </select>
+                        </div><br>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon" id="sizing-addon2">接口名称</span>
+                            <input type="text" class="form-control" aria-describedby="sizing-addon2" name="interfacename" id="interfacename">
+                        </div><br>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon" id="sizing-addon2">接口URL</span>
+                            <input type="text" class="form-control"  aria-describedby="sizing-addon2" name="url_id" id="url_id">
+                        </div><br>
+
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon" id="sizing-addon2">参数</span>
+                            <input type="text" class="form-control"  aria-describedby="sizing-addon2" name="defaultpar" id="defaultpar"/>
+                        </div><br>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon" id="sizing-addon2">备注</span>
+                            <input type="text" class="form-control"  aria-describedby="sizing-addon2" name="remark" id="remark"/>
+                        </div><br>
+                        <input style="display: none" name="interface_id" id="interface_id"/>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"  onclick="close_id()">关闭</button>
+                    <button type="button" class="btn btn-primary" id="oks_id">确认</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </div>
+
+{% endblock %}

@@ -1,0 +1,201 @@
+{% extends 'BasePage/interface_base.html' %}
+{% load staticfiles %}
+{% load static%}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-table.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/interface_list.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/test.css' %}"/>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/bootstrap-table.js' %}"></script>
+    <script src="{% static 'js/bootstrap-table-zh-CN.min.js' %}"></script>
+    <script src="{% static 'js/format_json.js' %}"></script>
+    <script src="{% static 'js/interface_list.js' %}"></script>
+    <script src="{% static 'js/excelJs.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="interface_list">
+        <div class="panel panel-default" style="margin-right: 5px">
+            <div class="panel-heading" style="text-align: left; font-family: 微软雅黑; font-size: 13px;height:40px">
+                <span class="glyphicon glyphicon-file"></span> 首页 / 接口管理 / 接口列表
+            </div>
+            <div class="panel-body">
+            <table>
+                <tr>
+                    <td>项目名称：</td>
+                    <td>&nbsp;&nbsp;</td>
+                    <td><select class="btn btn-default dropdown-toggle" id="pro_name">
+                        <option>---请选择---</option>
+                        {% for project in pro_content  %}
+                            <option  value="{{ project.pnumber }}">{{ project.pname }}</option>
+                        {% endfor %}
+                    </select></td>
+                    <td>&nbsp;&nbsp;</td>
+                    <td>模块名称：</td>
+                    <td><select class="btn btn-default dropdown-toggle" id="pro_mo_name">
+                        <option>---请选择---</option>
+                    </select></td>
+                    <td>&nbsp;&nbsp;</td>
+                    <td> 接口名称：</td>
+                    <td><input class="form-control"type="text" id="query_name" placeholder="请输入接口名称"/></td>
+                </tr>
+
+            </table>
+            <div style="margin:10px 5px 0px 0px;">
+                <a type="button" style="float:left;margin: 2px" class="btn btn-success" id="search"><span class="glyphicon glyphicon-search"></span>查询</a>
+                <button style="float:left;margin: 2px" type="button" class="btn btn-adds" onclick="interface_insert()"><span class="glyphicon glyphicon-plus"></span>添加</button>
+                <button style="float:left;margin: 2px" id="btn_delete" type="button" class="btn btn-danger" ><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除</button>
+                <button style="float:left;margin: 2px" type="button" class="btn btn-warning" data-toggle="modal" data-target="#myModal_addin"><span class="glyphicon glyphicon-import"></span>导入</button>
+                <button style="float:left;margin: 2px" type="button" class="btn btn-primary" onclick="pull_all_interface()"><span class="glyphicon glyphicon-export"></span>导出</button>
+            </div>
+            </div>
+        </div>
+
+        <!--左边面板-->
+        <div class="panel panel-success interface_left" style="overflow: auto" >
+{#            <div id="toolbar" class="btn-group">#}
+{##}
+{#            </div>#}
+            <div class="left_result">
+                <div class="left_result2">
+                    <table class="table table-hover" id="testtable" >
+
+                    </table>
+                </div></div>
+        </div>
+
+        <!--右面板-->
+        <div class="panel panel-info interface_right" >
+            <div style="margin: 8px 2px 0 5px">
+                <span class="glyphicon glyphicon-list" ></span> 接口详情:
+            </div>
+            <div class="panel-body">
+                <div  id="right_result">
+                    <div class="tab-pane fade in active scroll_bar" id="right_result2"></div>
+                </div>
+
+            </div>
+            <!-- 编辑-->
+            <div>
+                <div style="position:fixed;bottom: 20%;right: 3%"  id="EdidtButton">
+
+                </div>
+            </div>
+        </div>
+
+        <!-- 确认删除框-->
+        <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3 class="modal-title" id="myModalLabel">是否删除？</h3>
+                    </div>
+                    <div class="modal-body">
+                        <h4 style="text-align:center;color: red">
+                            您确认要删除该用例吗？
+                        </h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss ="modal">关闭</button>
+                        <a  class="btn btn-primary" id="sure_del">确认删除</a>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+        <!--修改模板-->
+        <div class="modal" id="update_Modle" tabindex="-1" aria-labelledby="title_id" role="dialog" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h6 class="modal-title" id="title_id">修改接口</h6>
+                    </div>
+                    <div class="modal-body">
+                        <form id = "interface_dsc">
+                            <div class="input-group input-group-sm">
+
+                                <span class="input-group-addon" id="sizing-addon3">项目名称</span>
+                                <select class="form-control"   id="pname" name="pname">
+                                    <option>---请选择---</option>
+                                    {% for project in pro_content  %}
+                                        <option  value="{{ project.pnumber }}">{{ project.pname }}</option>
+                                    {% endfor %}
+
+                                </select>
+
+                                <span class="input-group-addon" id="sizing-addon4">模块名称</span>
+                                <select class="form-control"   id="mname" name="mname">
+                                    <option>---请选择---</option>
+                                </select>
+
+                                <span class="input-group-addon" id="sizing-addon2">请求方式</span>
+                                <select id="type" class="form-control" id="type" name="type"><option value="0">GET</option><option value="1">POST</option>
+                                </select>
+                            </div><br>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-addon" id="sizing-addon2">接口名称</span>
+                                <input type="text" class="form-control" aria-describedby="sizing-addon2" name="interfacename" id="interfacename">
+                            </div><br>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-addon" id="sizing-addon2">接口URL</span>
+                                <input type="text" class="form-control"  aria-describedby="sizing-addon2" name="url_id" id="url_id">
+                            </div><br>
+
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-addon" id="sizing-addon2">参数</span>
+                                <textarea class="form-control" aria-describedby="sizing-addon2"id="defaultpar" name="defaultpar" style="height: 60px;" placeholder="请输入参数~" ></textarea>
+                            </div><br>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-addon" id="sizing-addon2">接口描述</span>
+                                <textarea class="form-control" aria-describedby="sizing-addon2" name="remark" id="remark" style="height: auto"  placeholder="请输入接口描述~" ></textarea>
+                            </div><br>
+                            <input style="display: none" name="id" id="interface_id"/>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"  onclick="close_id()">关闭</button>
+                        <button type="button" class="btn btn-primary" id="oks_id">确认</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal -->
+        </div>
+
+        <!--导入接口模态框-->
+        <div>
+            <div class="modal" id="myModal_addin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header" style="padding-bottom:5px">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h6 class="modal-title" id="myModalLabel">批量导入接口数据</h6>
+                        </div>
+
+                        <div class="modal-body">
+                            <div>
+                                <label>模板文件:</label>
+                                <input id="file_ex" type="file" name="excel">
+                                <br>
+                                <button type="button" class="btn btn-primary " onclick="upload_excel()">确定</button>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer" style="text-align:left">
+                            <a style="color: #22a5d2" href="/interface/down_inter_xls">下载模板</a>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

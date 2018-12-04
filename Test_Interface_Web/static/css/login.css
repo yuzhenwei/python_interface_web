@@ -1,0 +1,117 @@
+﻿body
+{
+	margin:0;
+	padding:0;
+	text-align:center;
+	background-color:#f3b840;
+}
+div,ul,li,td
+{
+	margin:0;
+	padding:0;
+	list-style:none;
+	font-size:12px;
+	font-family:Arial;
+}
+img
+{
+    border:0;
+}
+
+/* link */
+a {color: #666; text-decoration:none;}
+a.link { COLOR: #06C; TEXT-DECORATION: none;}
+a.link:hover { COLOR: #06C; TEXT-DECORATION: none;}
+/* global */
+.clear
+{
+	clear:both;
+}
+.line
+{
+	clear:both;
+	height:10px;
+	overflow:hidden;
+}
+input
+{
+	border:solid 1px #ACADB2;
+	cursor:default; 
+	color:#000; 
+	background-color:#fff;
+}
+
+textarea
+{
+	background-color:#fff;
+	border:solid 1px #ACADB2;
+}
+
+
+/* login */
+#login
+{
+	width:1280px;
+	height:650px;
+	margin:auto;
+	text-align: center;
+	background:url(/static/images/bg.jpg) no-repeat bottom;
+    padding-top: 70px;
+
+}
+#login div.logo
+{
+	width: 1280px;
+	height:50px;
+    text-align: center;
+    font-family: Arial;
+    font-size: 50px;
+    font-weight:bolder;
+    color: #ffffff;
+}
+#login .login_btn
+{
+	width:348px;
+	height:40px;
+	background:url(/static/images/login_btn.jpg) no-repeat bottom;
+    border:0px;
+    cursor:pointer;
+}
+#login .login_username
+{
+    width: 348px;
+    height: 30px;
+    background:url(/static/images/login_user.jpg) no-repeat bottom;
+    border:0px;
+    text-indent: 35px;
+    font-size: 18px;
+    cursor:text;
+    font-family:Arial;
+    color: #666;
+}
+#login .login_pwd
+{
+    width: 348px;
+    height: 30px;
+    background:url(/static/images/login_pwd.jpg) no-repeat bottom;
+    border:0px;
+    text-indent: 35px;
+    font-size: 18px;
+    cursor:text;
+    font-family:Arial;
+    color: #666;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

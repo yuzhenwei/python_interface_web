@@ -1,0 +1,25 @@
+{% extends 'BasePage/interface_base.html' %}
+{% load staticfiles %}
+{% load static %}
+
+{% block title %}<title>7lk自动化测试平台</title>{% endblock %}
+{% block bg %}indexbg{% endblock %}
+{% block content %}
+<div id="index_mian" >
+    <table>
+        <tr>
+            <td class="name_title">
+                {{ request.session.username }} 您好！
+            </td>
+        </tr>
+        <tr class="fu_title">
+            <td>欢迎来到7lk自动化测试平台！</td>
+            <td>上次登录时间：2017-11-23 14:00</td>
+        </tr>
+    </table>
+</div>
+{% endblock %}
+
+
+
+

@@ -1,0 +1,24 @@
+/*created by zijing 2018-07-20
+控制用例集维护-添加用例页面的检查点判断 的四个input样式
+*/
+.div-border{
+    display: inline-block;
+    height: 31px;
+    border: 0px;
+    width: 602px;
+    border-left:1px solid  #ccc;
+    padding-left: 10px;
+}
+.div-span{
+    display: inline-block;
+    margin-left: 10px;
+}
+.div-div{
+    width: 700px;
+    margin-top:10px;
+    padding: 0px;
+}
+#head_panel td{
+    text-align:center;
+    vertical-align:middle;
+}

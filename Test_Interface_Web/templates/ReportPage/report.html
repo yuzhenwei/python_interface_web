@@ -1,0 +1,55 @@
+{% extends 'BasePage/interface_base.html' %}
+{% load staticfiles %}
+{% load static%}
+{% block bg %}contentbg{% endblock %}
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-table.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/report.css' %}"/>
+{% endblock %}
+{% block js %}
+    <script src="{% static 'js/report_list.js' %}"></script>
+    <script src="{% static 'js/bootstrap-table.js' %}"></script>
+    <script src="{% static 'js/bootstrap-table-zh-CN.min.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <div class="panel panel-default" style="margin:15px 5px 15px 5px">
+        <div class="panel-heading" style="text-align: left; font-family: 微软雅黑; font-size: 13px;height:40px">
+            <span class="glyphicon glyphicon-file"></span> 首页 / 报告管理 / 报告列表
+        </div>
+        <div class="panel-body">
+            <table>
+                <tr>
+                    <td>项目名称：</td>
+
+
+                    <td>
+                        <select class="btn btn-default dropdown-toggle" id="pro" name="pro">
+                            <option value="-1">---请选择---</option>
+                            {% for pr in prolist %}
+                                <option value="{{ pr.pnumber}}">{{ pr.pname }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>&nbsp;&nbsp;</td>
+                    <td>用例集：</td>
+                    <td>
+                        <select class="btn btn-default dropdown-toggle" id="templatelist" name="templatelist"  >
+                            <option value="-1">---请选择---</option>
+                        </select>
+                    <td>&nbsp;&nbsp;</td>
+                    </td>
+                    <td><button type="button" class="btn btn-success" id="search"><span class="glyphicon glyphicon-search"></span> 查询</button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+        <div style="margin:15px 5px 0px 5px;height: 70%;overflow: auto">
+            <table class="table table-striped table-bordered table-hover" id="table">
+
+            </table>
+
+        </div>
+    </div>
+
+{% endblock %}

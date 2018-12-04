@@ -1,0 +1,131 @@
+{% extends 'BasePage/interface_base.html' %}
+{% load staticfiles %}
+{% load static %}
+
+{% block title %}<title>用例集执行</title>{% endblock %}
+{% block js %}
+    <script src="{% static 'js/case_runner.js' %}"></script>
+    <script src="{% static 'js/format_json.js' %}"></script>
+    <script src="{% static 'js/bootstrap-table.js' %}"></script>
+    <script src="{% static 'js/bootstrap-table-zh-CN.min.js' %}"></script>
+{% endblock %}
+{% block css %}
+    <style>
+        .ObjectBrace{color:#00AA00;font-weight:bold;font-family: Arial}
+
+        .ArrayBrace{color:#0033FF;font-weight:bold;font-family: Arial}
+
+        .PropertyName{color:#CC0000;font-weight:bold;font-family: Arial}
+
+        .String{color:#007777;}
+
+        .Number{color:#AA00AA;}
+
+        .Comma{color:#000000;font-weight:bold;}
+    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-table.css' %}"/>
+{% endblock %}
+{% block bg %}contentbg{% endblock %}
+{% block content %}
+    <!--用例集搜索-->
+    <div class="panel panel-default" style="margin:15px 5px 15px 5px">
+        <div class="panel-heading" style="text-align: left; font-family: 微软雅黑; font-size: 13px;height:40px">
+            <span class="glyphicon glyphicon-file"></span> 首页 / 用例管理 / 用例集执行
+        </div>
+        <div class="panel-body">
+            <table>
+                <tr>
+                    <td>项目名称：</td>
+                    <td>
+                        <select class="btn btn-default dropdown-toggle" id="project_id">
+                            <option value=-1>---请选择---</option>
+                            {% for pj in project_info %}
+                                <option value="{{ pj.pnumber }}">{{ pj.pname }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>&nbsp;&nbsp;</td>
+                    <td>用例集：</td>
+                    <td>
+                        <select class="btn btn-default dropdown-toggle" id="template_id">
+                            <option value=-1>---请选择---</option>
+                        </select>
+                    </td>
+                    <td>&nbsp;&nbsp;</td>
+                    <td>
+                        <button type="button" class="btn btn-success" id="selectuser"><span class="glyphicon glyphicon-search"></span> 查询</button>
+                    </td>
+                </tr>
+                <div style="float:right">
+                    <button type="button" class="btn btn-info" id="runnerbtn"><span class="glyphicon glyphicon-send"></span> 执行</button>
+                    <button type="button" class="btn btn-warning"  id="resultbtn" data-container="body" data-toggle="popover" data-placement="left" data-html="true"><span class="glyphicon glyphicon-indent-left"></span> 生成报告</button></td>
+                    <button type="button" class="btn btn-info"   id="lookbtn" data-toggle="modal" data-target="#reportmodel"><span class="glyphicon glyphicon-stats"></span> 查看报告</button>
+                </div>
+
+            </table>
+        </div>
+    </div>
+
+    <!--用例列表-->
+    <div class="pre-scrollable" id="project_table" style="margin-top: 15px;padding:0px 0 0 5px;">
+        <div style="width:100%;overflow: auto;padding-right:5px">
+            <table class="table table-bordered table-hover" style="width: 100%;">
+                <thead>
+                <tr class="active">
+                    <th>用例编号</th>
+                    <th>接口名</th>
+                    <th>用例名称</th>
+                    <th>URL</th>
+                    <th>用例参数</th>
+                    <th>HTTP请求状态</th>
+                    <th>查看结果</th>
+                </tr>
+                </thead>
+                <tbody id="caseinfo">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!--测试报告-->
+    <div class="modal" id="reportmodel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog" style="width: 1000px;">
+            <div class="modal-content">
+                <div class="modal-header" style="padding-bottom: 5px">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h6 class="modal-title" id="myModalLabel" style="height: 20px;line-height:20px;text-align: left"><span class="glyphicon glyphicon-list"></span>测试报告明细</h6>
+                </div>
+                <div class="modal-body" style="text-align: left;padding: 10px;">
+                    <ul>
+                        <li style="height: 300px;overflow: auto">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>序列号</th>
+                                    <th>项目名称</th>
+                                    <th>用例集</th>
+                                    <th>用例总数</th>
+                                    <th>通过数</th>
+                                    <th>失败数</th>
+                                    <th>错误数</th>
+                                    <th>执行时间</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody id="report_body">
+
+                                </tbody>
+                            </table>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+{% endblock %}

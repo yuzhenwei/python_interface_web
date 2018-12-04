@@ -1,0 +1,236 @@
+{% extends 'BasePage/interface_base.html' %}
+{% load staticfiles %}
+{% load static%}
+{% block title %}<title>用例统计</title>{% endblock %}
+{% block bg %}contentbg{% endblock %}
+{% block js %}
+    <script src="{% static 'js/echarts.common.min.js' %}"></script>
+    <script src="{% static 'js/echarts.min.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+    <div style="width:1100px;height:200px;margin-bottom: 50px">
+        <div style="width:200px;height:180px;float:left">
+            <div style="width: 200px;height:180px;font-size:18px;text-align:center;line-height: 240px" id="interfacetotal">0个</div>
+            <div style="line-height: 20px;text-align: center;font-weight: bolder;font-size: 16px">接口总数</div>
+        </div>
+        <div style="width:200px;height:180px;float:left">
+            <div style="width: 200px;height:180px;font-size:18px;text-align:center;line-height: 240px" id="usercasetotal">0个</div>
+            <div style="line-height: 20px;text-align: center;font-weight: bolder;font-size: 16px">用例总数</div>
+        </div>
+        <ul style="width:200px;height:180px;float:left">
+            <li id="pie" style="width: 200px;height:180px;"></li>
+            <li style="line-height: 20px;text-align: center;font-weight: bolder;font-size: 16px">近7天用例通过率</li>
+        </ul>
+        <ul style="width:200px;height:180px;float:left">
+            <li id="pie1" style="width: 200px;height:180px;"></li>
+            <li style="line-height: 20px;text-align: center;font-weight: bolder;font-size: 16px">近30天用例通过率</li>
+        </ul>
+        <table style="width:250px;height:180px;float:right">
+            <tr>
+                <td>项目名：</td>
+                <td>
+                    <select class="btn btn-default dropdown-toggle" id="pid">
+                        {% for pj in project_info %}
+                            <option value="{{ pj.pnumber__pnumber }}">{{ pj.pnumber__pname }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-info" onclick="showdata()" id="search"><span class="glyphicon glyphicon-search"></span>
+                    查询
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="width: 1000px;height: 350px;" id="container"></div>
+    <div style="width: 1000px;height: 20px;text-align: center;line-height: 20px;font-weight: bolder">用例集运行统计图</div>
+
+<!--环形公共方法-->
+<script type="text/javascript">
+    function showpie(divtitle,okcount,nocount) {
+        //柱状图
+        var asd = document.getElementById(divtitle);
+        var pieChart = echarts.init(asd);
+        var labelTop = {//上层样式
+            normal: {
+                color: '#0099cc',
+                label: {
+                    show: true,
+                    position: 'center',
+                    formatter: '{b}',
+                    textStyle: {
+                        baseline: 'bottom',
+                        fontSize: 14
+                    }
+                },
+                labelLine: {
+                    show: false
+                }
+            }
+        };
+        var labelFromatter = {//环内样式
+            normal: {//默认样式
+                label: {//标签
+                    formatter: function (a, b, c) {
+                        return 100 - c + '%'
+                    },
+                    // labelLine.length：30,  //线长，从外边缘起计算，可为负值
+                    textStyle: {//标签文本样式
+                        color: 'black',
+                        align: 'center',
+                        baseline: 'top'//垂直对其方式
+                    }
+                }
+            }
+        };
+        var labelBottom = {//底层样式
+            normal: {
+                color: '#99ccff',
+                label: {
+                    show: true,
+                    position: 'center',
+                    fontSize: 12
+                },
+                labelLine: {
+                    show: false
+                }
+            },
+            emphasis: {//悬浮式样式
+                color: 'rgba( 0,0,0,0)'
+            }
+        };
+        var radius = [60, 50];// 半径[内半径，外半径]
+
+        var pieChartOption = {
+            animation: false,
+            series: [
+                {
+                    type: 'pie',
+                    center: ['50%', '60%'],//圆心坐标（div中的%比例）
+                    radius: radius,//半径
+                    x: '0%', // for funnel
+                    itemStyle: labelTop,//graphStyleA,//图形样式 // 当查到的数据不存在（并非为0），此属性隐藏
+                    data: [
+                        {name: '通过率', value: okcount, itemStyle: labelTop},
+                        {name: okcount+'%', value: nocount, itemStyle: labelBottom}
+                    ]
+                }
+            ]
+        };
+        pieChart.setOption(pieChartOption);
+    }
+</script>
+
+<script type="text/javascript">
+    //查询数据
+    function showdata() {
+        var pid=$("#pid").find("option:selected").val();
+        $.ajax({
+        type: "POST",
+        url: "/statistics/statistics/",
+        data: {pid:pid},
+        dataType: "json",
+
+        success: function (data) {
+            msginfo=data.msg;
+            document.getElementById('interfacetotal').innerHTML=data.interfacetotal+'个';
+            document.getElementById('usercasetotal').innerHTML=data.usercasetotal+'个';
+            showpie('pie',data.servenpercent,data.noservenpercent);
+            showpie('pie1',data.threepercent,data.nothreepercent);
+            s_info(msginfo);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown, data) {
+            if (textStatus == 'error')
+                alert("Ajax返回出错了");
+        }
+    });
+    }
+
+/*生成统计图*/
+function s_info(data)
+{
+    var datainfo=eval('['+data+']');
+    var dom = document.getElementById("container");
+        var myChart = echarts.init(dom);
+        var app = {};
+        option = null;
+        option = {
+            legend: {},
+            tooltip: {},
+            dataset: {
+                // 这里指定了维度名的顺序，从而可以利用默认的维度到坐标轴的映射。
+                // 如果不指定 dimensions，也可以通过指定 series.encode 完成映射，参见后文。
+                dimensions: ['product', '通过数', '失败数', '报错数'],
+                source:datainfo
+                  /*[
+                {'product': '订单流程', '通过数': 43, '失败数': 85, '报错数': 93},
+                {'product': '供应链流程', '通过数': 83, '失败数': 73, '报错数': 55},
+                {'product': '在线问诊', '通过数': 86, '失败数': 65, '报错数': 82},
+                {'product': '退货流程', '通过数': 72, '失败数': 53, '报错数': 39}
+            ]*/
+        },
+        xAxis: {type: 'category'},
+        yAxis: {},
+        series: [
+            {
+                type: 'bar', barWidth:'20',
+                itemStyle
+                    :{
+                    normal:{
+                        label:{
+                            show: true, //开启显示
+									position: 'top', //在上方显示
+									textStyle: { //数值样式
+										color: 'black',
+										fontSize: 12
+									}
+                        }
+                    }
+                }
+            },
+            {
+                type: 'bar', barWidth:'20',
+                itemStyle
+                    :{
+                    normal:{
+                        label:{
+                            show: true, //开启显示
+									position: 'top', //在上方显示
+									textStyle: { //数值样式
+										color: 'black',
+										fontSize: 12
+									}
+                        }
+                    }
+                }
+            },
+            {
+                type: 'bar', barWidth:'20',
+                itemStyle
+                    :{
+                    normal:{
+                        label:{
+                            show: true, //开启显示
+									position: 'top', //在上方显示
+									textStyle: { //数值样式
+										color: 'black',
+										fontSize: 12
+									}
+                        }
+                    }
+                }
+            }
+        ]
+    };
+
+        if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+        }
+}
+
+</script>
+
+{% endblock %}

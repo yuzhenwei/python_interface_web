@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {%block title%}{%endblock%}  {# 自定义title #}
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}"/>
+
+    {% block css %}{% endblock %}  {# 自定义css使用 #}
+
+    <script  src="{% static 'jquery-3.1.1/jquery-3.1.1.min.js' %}"></script>
+    <script   src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+    {% block js %}{% endblock %}  {# 自定义js使用 #}
+
+    <style>
+        .indexbg{background:url(/static/images/index_bg.jpg) no-repeat right bottom}
+        .contentbg{background:url(/static/images/main_bg.jpg) repeat-x bottom}
+    </style>
+    {% load staticfiles %}
+    <link REL="SHORTCUT ICON" HREF="{% static 'images/favicon.ico' %}"/>
+</head>
+<body class="{% block bg %}{% endblock %}">{# 自定义背景 #}
+     <!--头部LOGO-->
+    <div id="logo">
+        <div class="dropdown tx">
+            <p data-toggle="dropdown" class="dmune">&nbsp;{{ request.session.username }} <span class="glyphicon glyphicon-chevron-down"></span></p>
+                <div class="dropdown-menu" style="min-width: 100px" role="menu" aria-labelledby="dLabel">
+                    <a href="#" class="mune_a" style="border-bottom:solid 1px #eee"><span class="glyphicon glyphicon-cog"></span> 用户设置</a>
+                    <a href="/web/loginout" class="mune_a"><span class="glyphicon glyphicon-off"></span> 安全退出</a>
+                </div>
+        </div>
+    </div>
+
+     <!--首页内容-->
+    <div id="content_div">
+        <ul id="" class="left_ul">
+            <li class="navtx">
+                <a href="#"><img src="{% static 'images/bigtx.jpg' %}" alt=""></a>
+            </li>
+            <li class="tx_title">Hi，{{ request.session.username }}</li>
+            <li class="tx_title_bg" data-toggle="collapse" data-target="#project" onclick="switchclass('project_class')"><a href="#" class="title_a"><b>项目管理</b><span id="project_class" class="glyphicon glyphicon-chevron-up" style="text-indent: 63px"></span></a></li>
+            <li id="project" class="collapse in">
+                <a class="small_a small_a" href="/project/search" name="small_title"  rel="login.html">项目列表</a>
+            </li>
+            <li class="tx_title_bg" data-toggle="collapse" data-target="#interface"><a href="#" class="title_a" onclick="switchclass('interface_class')"><b>接口管理</b><span id="interface_class" class="glyphicon glyphicon-chevron-up" style="text-indent: 63px"></span></a></li>
+            <li id="interface" class="collapse in">
+                <a class="small_a" href="/interface/quicktest" rel="login.html">快捷测试</a>
+                <a class="small_a" href="/interface/list">接口列表</a>
+            </li>
+            <li class="tx_title_bg" data-toggle="collapse" data-target="#usercase"><a href="#" class="title_a" onclick="switchclass('usercase_class')"><b>用例集管理</b><span id="usercase_class" class="glyphicon glyphicon-chevron-up" style="text-indent: 50px"></span></a></li>
+            <li id="usercase" class="collapse in">
+                <a class="small_a" href="/testcase/casesuitelist">用例集列表</a>
+                <a class="small_a" href="/testcase/testcase_maintain">用例集维护</a>
+                <a class="small_a" href="/testcase/testcaserunner">用例集执行</a>
+            </li>
+            <li class="tx_title_bg" data-toggle="collapse" data-target="#report"><a href="#" class="title_a" onclick="switchclass('report_class')"><b>报告管理</b><span id="report_class" class="glyphicon glyphicon-chevron-up" style="text-indent: 63px"></span></a></li>
+            <li id="report" class="collapse in">
+                <a class="small_a" href="/report/report">报告列表</a>
+            </li>
+            <li id="jobli" class="tx_title_bg" data-toggle="collapse" data-target="#job"><a href="#" class="title_a" onclick="switchclass('job_class')"><b>定时任务管理</b><span id="job_class" class="glyphicon glyphicon-chevron-up" style="text-indent: 40px"></span></a></li>
+            <li id="job" class="collapse in">
+                <a class="small_a" href="/job/job">定时任务列表</a>
+            </li>
+            <li id="jobli" class="tx_title_bg" data-toggle="collapse" data-target="#job"><a href="#" class="title_a" onclick="switchclass('total_class')"><b>数据统计</b><span id="total_class" class="glyphicon glyphicon-chevron-up" style="text-indent: 63px"></span></a></li>
+            <li id="job" class="collapse in">
+                <a class="small_a" href="/statistics/statistics">用例统计</a>
+            </li>
+        </ul>
+
+
+       <!--右侧内容-->
+        <div class="right_content_div">
+            {% block content%}{% endblock %}
+        </div>
+    </div>
+
+
+</body>
+</html>
+
+<!--切换菜单图标-->
+<script>
+    function  switchclass(id)
+    {
+        var name=$("#"+id);
+        if(name.attr("class")=="glyphicon glyphicon-chevron-up")
+        {
+            name.attr("class","glyphicon glyphicon-chevron-down");
+        }
+        else
+        {
+             name.attr("class","glyphicon glyphicon-chevron-up");
+        }
+    }
+</script>

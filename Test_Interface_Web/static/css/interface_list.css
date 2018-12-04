@@ -1,0 +1,88 @@
+#interface_list
+{
+    padding:18px 0 0 5px;
+}
+#interface_list .head
+{
+    background-color: #dff0d8;
+    height: 50px;
+}
+#interface_list .head div
+{
+    padding-top:15px
+}
+
+#interface_list .content
+{
+    padding: 0px 0px;
+}
+
+#interface_list .content select
+{
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+}
+.btn-adds {
+  color: #fff;
+  background-color: #58bfdd;
+  border-color: #58bfdd;
+}
+
+.interface_left{
+    width:60%;
+    float: left;
+    margin-left: 5px;
+
+}
+.left_result{
+    text-align: left;
+    overflow: auto;
+    height: 495px;
+}
+.left_result2{
+    text-align: left;
+    overflow: auto;
+    height: 380px;
+}
+.interface_right{
+    width:38%;
+    float: right;
+    height: 85%;
+    margin-right: 6px;
+}
+#right_result {
+    text-align: left;
+    overflow: auto;
+    font-size: 13px;
+    height: 440px;
+}
+#right_result2 {
+    text-align: left;
+    overflow: auto;
+    height: 340px;
+}
+
+#left_result {
+    text-align: left;
+    font-size: 13px;
+    height: 370px;
+}
+
+.interface_content{
+    margin-right: 5px;
+    overflow: auto
+}
+.editbutton{
+    color: #fff;
+    background-color: #419641;
+    border-radius: 50%;
+    height: 50px;
+}
+
+
+.panel-body {
+    overflow: auto;
+    height: 85%;
+}

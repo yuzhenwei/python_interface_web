@@ -1,0 +1,114 @@
+{% extends 'BasePage/interface_base.html' %}
+{% load staticfiles %}
+{% load static %}
+
+{% block title %}<title>用例集列表</title>{% endblock %}
+{% block bg %}contentbg{% endblock %}
+{% block js %}
+    <script src="{% static 'js/caseSuiteManagement.js' %}"></script>
+    <script src="{% static 'js/bootstrap-table.js' %}"></script>
+    <script src="{% static 'js/bootstrap-table-zh-CN.min.js' %}"></script>
+{% endblock %}
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-table.css' %}"/>
+{% endblock %}
+{% block content %}
+
+<!--按钮所在行-->
+<div class="panel panel-default" style="margin:15px 5px 15px 5px">
+<div class="panel-heading" style="text-align: left; font-family: 微软雅黑; font-size: 13px;height:40px">
+    <span class="glyphicon glyphicon-file"></span> 首页 / 用例管理 / 用例集列表
+</div>
+    <div class="panel-body">
+        <tr>
+            <td>项目名称：</td>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <span class="projectName1">--请选择--</span>
+                    <span class="caret"></span></button>
+                <ul class="dropdown-menu" style="min-width:100%" role="menu" id="projectBtn1">
+                    <li value=""><a href="#"><span>--请选择--</span></a></li>
+                    {% for project in project_list %}
+                        <li value="">
+                            <a href="#"><span>{{ project.0 }}</span></a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <td>
+                <!--<input type="button" class="btn btn-md btn-default" id="search" value="查询" >-->
+                <button type="button" class="btn btn-success" id="search"><span class="glyphicon glyphicon-search"></span>
+                    查询
+                </button>
+            </td>
+        </tr>
+
+        <button style="float:right" type="button" class="btn btn-info smodal"  id="new" data-toggle="modal" data-target="#addusercase"><span class="glyphicon glyphicon-plus"></span>添加用例集</button>
+    </div>
+</div>
+
+<!--表格内容展示,直接读模板caseSuites内容-->
+    <div id="project_table" style="margin-top: 0px;padding:0px 0 0 5px;">
+        <div id="project_table" style="margin-top: 0px;padding:0px 0px 0 5px;margin-right: 5px">
+            <table id="table" ></table>
+        </div>
+    </div>
+
+<!--模态框-->
+<div id='mymodal' class='modal' aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="close" data-dismiss='modal'>&times;</div>
+                <h6 class="modal-title">新增用例集</h6>
+            </div>
+            <div class="modal-body">
+                <div class="btn-group">
+                    <button class="btn btn-default">项目：</button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="selectproject">
+                        <span class="projectName2">--请选择--</span>
+                        <span class="caret"></span></button>
+                    <ul class="dropdown-menu" style="min-width:100%" role="menu" id="projectBtn2">
+                        {% for project in project_list %}
+                        <li value="">
+                            <a href="#"><span>{{ project.0 }}</span></a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+                <div class="input-group" style="margin-top: 25px">
+                    <span class="input-group-addon" id="basic-addon3">用例集名称：</span>
+                    <input type="text" class="form-control" id="templateName" placeholder="请输入用例集名称(最长30字符)"
+                           aria-describedby="basic-addon3" maxlength="30" />
+                </div>
+
+            </div>
+            <div class="modal-footer" style="text-align: center">
+                <input class='btn btn-primary' id="save" type="button" value="保存" />
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- 确认删除框-->
+    <div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="myModalLabel">是否删除？</h3>
+                </div>
+                <div class="modal-body">
+                    <h4 style="text-align:center;color: red">
+                        您确认要删除该用例集吗？
+                    </h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss ="modal">关闭</button>
+                    <a  class="btn btn-primary" id="sure_del">确认删除</a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+{% endblock %}

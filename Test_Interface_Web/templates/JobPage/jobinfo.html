@@ -1,0 +1,355 @@
+{% extends 'BasePage/interface_base.html' %}
+{% load staticfiles %}
+{% load static%}
+{% block title %}<title>定时任务列表</title>{% endblock %}
+{% block bg %}contentbg{% endblock %}
+{% block js %}
+    <script src="{% static 'js/job.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+ <!--添加定时任务-->
+<div class="panel panel-default" style="margin:15px 5px 15px 5px">
+    <div class="panel-heading" style="text-align: left; font-family: 微软雅黑; font-size: 13px;height:40px">
+        <span class="glyphicon glyphicon-file"></span> 首页 / 定时任务管理 / 定时任务列表
+    </div>
+        <div class="panel-body">
+            <table style="width: 1100px">
+                <tr>
+                    <td>任务名称：</td>
+                    <td>
+                        <input type="text" class="form-control" id="jobkey" style="width: 150px" placeholder="请输入任务名称" />
+                    </td>
+                    <td>&nbsp;&nbsp;</td>
+                    <td>
+                        <button type="button" class="btn btn-success" id="selectjob"><span class="glyphicon glyphicon-search"></span> 查询</button>
+                    </td>
+                    <td style="width: 400px"></td>
+                    <td>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal_addin"><span class="glyphicon glyphicon-plus"></span> 添加定时任务</button>
+                    </td>
+                    <td style="padding-left: 10px">
+                        <button type="button" class="btn btn-success" id="startjob"><span class="glyphicon glyphicon-play-circle"></span>重启任务</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+</div>
+    <!--任务列表-->
+    <div id="project_table" style="margin-top: 15px;padding:0px 5px 0px 5px;">
+        <table class="table table-bordered table-hover" style="width: 100%;">
+            <thead>
+            <tr class="active">
+                <th>任务ID</th>
+                <th>任务名称</th>
+                <th>时间段</th>
+                <th>执行时间</th>
+                <th>状态</th>
+                <th>邮箱地址</th>
+                <th colspan="2">操作</th>
+            </tr>
+            </thead>
+            <tbody id="jobinfo">
+                {% for jb in jblist %}
+                    <tr id="jobtr{{ jb.id }}">
+                        <td>{{ jb.jobid }}</td>
+                        <td>{{ jb.jobname }}</td>
+                        {% if jb.day_of_week == "mon-fri" %}
+                            <td>星期一到五</td>
+                        {% elif jb.day_of_week == "mon-sun"%}
+                            <td>星期一到日</td>
+                        {% endif %}
+                        <td>{{ jb.runnertime }}</td>
+                        <td style="display:none">{{ jb.jobtype }}</td>
+                        {% if jb.jobtype == 0 %}
+                            <td>正常</td>
+                        {% elif jb.jobtype == 1%}
+                            <td>暂停</td>
+                        {% endif %}
+                        <td>{{ jb.mailaddress }}</td>
+                        <td style="display:none">{{ jb.caselist }}</td>
+                        <td style="display:none">{{ jb.day_of_week }}</td>
+                        <td style="display:none">{{ jb.jobcontent }}</td>
+                        <td style="display:none">{{ jb.jobtarget }}</td>
+                        <td>
+                            <a style="cursor:pointer" onclick="updatejob({{ jb.id }})" data-toggle="modal" data-target="#upmyModal">编辑</a>
+                        </td>
+                        <td><a style="cursor:pointer" name="deljob" id="{{ jb.id }}">删除</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+     </div>
+
+
+<!--添加任务-->
+<div class="modal" id="myModal_addin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+<div class="modal-dialog" style="width: 800px">
+    <div class="modal-content">
+        <div class="modal-header" style="padding-bottom:5px">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h6 class="modal-title" id="myModalLabel">添加定时任务</h6>
+        </div>
+
+        <div class="modal-body" style="height:430px">
+            <table style="width: 100%;height: 350px">
+                <tr>
+                    <td>任务名称：</td>
+                    <td>
+                        <input type="text" class="form-control" id="job_name" style="width: 200px" placeholder="请输入任务名称" />
+                    </td>
+                    <td>Email：</td>
+                    <td>
+                        <input type="text" class="form-control" id="mail" style="width: 300px" placeholder="多个请用;分隔" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>时间段：</td>
+                    <td>
+                        <select class="btn btn-default dropdown-toggle" id="day_of_week">
+                            <option value="mon-fri">星期一到五</option>
+                            <option value="mon-sun">星期一到日</option>
+                        </select>
+                    </td>
+                    <td>执行时间：</td>
+                    <td>
+                        <select class="btn btn-default dropdown-toggle" id="hour">
+                            <option value="0">00</option>
+                            <option value="1">01</option>
+                            <option value="2">02</option>
+                            <option value="3">03</option>
+                            <option value="4">04</option>
+                            <option value="5">05</option>
+                            <option value="6">06</option>
+                            <option value="7">07</option>
+                            <option value="8">08</option>
+                            <option value="9">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                        </select>
+                        时
+                        <select class="btn btn-default dropdown-toggle" id="minute">
+                            <option value="0">00</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="45">45</option>
+                            <option value="50">50</option>
+                        </select>
+                        分
+                        <select class="btn btn-default dropdown-toggle" id="second">
+                            <option value="0">00</option>
+                        </select>
+                        秒
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>状态：</td>
+                    <td>
+                        <select class="btn btn-default dropdown-toggle" id="jobtype">
+                            <option value="0">正常</option>
+                            <option value="1">暂停</option>
+                        </select>
+                    </td>
+                    <td>用例集：</td>
+                    <td>
+                        <select class="btn btn-default dropdown-toggle" id="proinfo">
+                            <option value='-1'>请选择项目</option>
+                            {% for pj in prolist %}
+                                <option value='{{ pj.pnumber }}'>{{ pj.pname}}</option>
+                            {% endfor %}
+                        </select>
+                        <select class="btn btn-default dropdown-toggle" id="caseinfo">
+                            <option value='0'>请选择用例集</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>JOB描述：</td>
+                    <td colspan="3">
+                        <textarea id="jobcontent" placeholder="请输入定时任务描述" style="width:567px;height: 100px"></textarea>
+                    </td>
+                </tr>
+                 <tr>
+                    <td>JOB目标：</td>
+                    <td colspan="3">
+                        <textarea id="jobtarget" placeholder="请输入定时任务目标" style="width:567px;height: 100px"></textarea>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-info" id="savejob"><span class="glyphicon glyphicon-save"></span> 保存</button>
+        </div>
+
+    </div>
+</div>
+</div>
+
+
+
+
+<!--编辑任务-->
+<div class="modal" id="upmyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+<div class="modal-dialog" style="width: 800px">
+    <div class="modal-content">
+        <div class="modal-header" style="padding-bottom:5px">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h6 class="modal-title" id="myModalLabel">编辑 定时任务</h6>
+        </div>
+
+        <div class="modal-body" style="height:430px">
+            <table style="width: 100%;height: 350px">
+                <tr>
+                    <td>任务名称：<input type="hidden" id="j_id"/></td>
+                    <td>
+                        <input type="text" class="form-control" id="upjob_name" style="width: 200px" placeholder="请输入任务名称" />
+                    </td>
+                    <td>Email：</td>
+                    <td>
+                        <input type="text" class="form-control" id="upmail" style="width: 300px" placeholder="多个请用;分隔" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>时间段：</td>
+                    <td>
+                        <select class="btn btn-default dropdown-toggle" id="upday_of_week">
+                            <option value="mon-fri">星期一到五</option>
+                            <option value="mon-sun">星期一到日</option>
+                        </select>
+                    </td>
+                    <td>执行时间：</td>
+                    <td>
+                        <select class="btn btn-default dropdown-toggle" id="uphour">
+                            <option value="0">00</option>
+                            <option value="1">01</option>
+                            <option value="2">02</option>
+                            <option value="3">03</option>
+                            <option value="4">04</option>
+                            <option value="5">05</option>
+                            <option value="6">06</option>
+                            <option value="7">07</option>
+                            <option value="8">08</option>
+                            <option value="9">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                        </select>
+                        时
+                        <select class="btn btn-default dropdown-toggle" id="upminute">
+                            <option value="0">00</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="45">45</option>
+                        </select>
+                        分
+                        <select class="btn btn-default dropdown-toggle" id="upsecond">
+                            <option value="0">00</option>
+                        </select>
+                        秒
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>状态：</td>
+                    <td>
+                        <select class="btn btn-default dropdown-toggle" id="upjobtype">
+                            <option value="0">正常</option>
+                            <option value="1">暂停</option>
+                        </select>
+                    </td>
+                    <td>用例集：</td>
+                    <td>
+                        <select class="btn btn-default dropdown-toggle" id="upcaseinfo" disabled="disabled">
+                            {% for cs in case_list %}
+                                <option value='{{cs.id }}'>{{ cs.templatename }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>JOB描述：</td>
+                    <td colspan="3"  style="text-align: left">
+                        <textarea id="upjobcontent" placeholder="请输入定时任务描述" style="width:567px;height: 100px"></textarea>
+                    </td>
+                </tr>
+                 <tr>
+                    <td>JOB目标：</td>
+                    <td colspan="3">
+                        <textarea id="upjobtarget" placeholder="请输入定时任务目标" style="width:567px;height: 100px"></textarea>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-info" id="updatejob"><span class="glyphicon glyphicon-save"></span> 保存</button>
+        </div>
+
+    </div>
+</div>
+</div>
+
+
+
+<!--传递默认值-->
+<script type="text/javascript">
+function updatejob(id)
+{
+
+    var jobname=$("#jobtr"+id).find('td').eq(1).text();           //任务名称
+    var daytoweek=$("#jobtr"+id).find('td').eq(8).text();       //时间段
+    var runnertime=$("#jobtr"+id).find('td').eq(3).text().split(":");      //运行时间
+    var hours=runnertime[0];
+    var fen=runnertime[1];
+    var miao=runnertime[2];
+    var jobtype=$("#jobtr"+id).find('td').eq(4).text();     //任务状态
+    var mail=$("#jobtr"+id).find('td').eq(6).text();        //邮箱
+    var t_id=$("#jobtr"+id).find('td').eq(7).text();        //用例集合ID
+    var jobcontent=$("#jobtr"+id).find('td').eq(9).text();       //JOB描述
+    var jobtarget=$("#jobtr"+id).find('td').eq(10).text();    //JOB目标
+
+    $("#j_id").val(id);
+    $("#upjob_name").val(jobname);
+    $("#upmail").val(mail);
+
+    $("#upday_of_week ").val(daytoweek);
+    $("#uphour ").val(hours);
+    $("#upminute ").val(fen);
+    $("#upsecond ").val(miao);
+    $("#upjobtype ").val(jobtype);
+    $("#upcaseinfo").val(t_id);
+    $("#upjobcontent").val(jobcontent);
+    $("#upjobtarget").val(jobtarget);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<head>
+    <meta charset="UTF-8">
+    <title>7lk自动化测试平台</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+    <script  src="{% static 'jquery-3.1.1/jquery-3.1.1.min.js' %}"></script>
+    <script   src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    {% load staticfiles %}
+    <link REL="SHORTCUT ICON" HREF="{% static 'images/favicon.ico' %}"/>
+</head>
+<body>
+    <div id="login">
+        <div class="logo"><img src="{% static 'images/logo.jpg' %}"></div>
+        <ul style="margin-top:60px">
+            <li>
+                <input type="text" class="login_username" name="username" id="username" data-container="body" data-toggle="popover" data-placement="right" data-html="true"/>
+            </li>
+            <li style="height:35px"></li>
+            <li>
+                <input type="password" class="login_pwd" name="password" id="pwd" data-container="body" data-toggle="popover" data-placement="right" data-html="true"/>
+            </li>
+            <li style="height:40px"></li>
+            <li>
+                <input class="login_btn" id="loginbtn" value=""/>
+            </li>
+        </ul>
+    </div>
+<script>
+$(function () {
+	$("[data-toggle='popover']").popover('hide');
+});
+</script>
+</body>
+</html>
+
+
+
+<!-- 用户登录 -->
+<script>
+    $("#loginbtn").click(function (e) {
+        var username = jQuery.trim($("#username").val()); //账号
+        var pwd=jQuery.trim($("#pwd").val()); //密码
+
+        if(username.length==0)
+        {
+            tishi("#username", "账号不能为空！", 0);
+            window.setTimeout("$('#username').popover('destroy');", 3000);
+        }
+        else if(pwd.length==0)
+        {
+            tishi("#pwd", "密码不能为空！", 0);
+            window.setTimeout("$('#pwd').popover('destroy');", 3000);
+        }
+        else
+        {
+            $.ajax({
+                type:"POST",
+                url:"LoginPage/login.html",
+                data:{username:username,pwd:pwd},
+                dataType:"json",
+
+                success: function(data) {
+                    var msg_info= data.msg;
+                    if(msg_info=="-1")
+                    {
+                        tishi("#username", "账号不存在！", 0);
+                        window.setTimeout("$('#username').popover('destroy');", 3000);
+                    }
+                    else if(msg_info=="0")
+                    {
+                        tishi("#pwd", "账号或密码不正确！", 0);
+                        window.setTimeout("$('#pwd').popover('destroy');", 3000);
+                    }
+                    else
+                    {
+                        window.location.replace("/web/index/");
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown,data){
+                    if (textStatus == 'error')
+                        alert("Ajax返回出错了");
+                }})
+        }});
+
+
+//提示语公共方法
+function tishi(name,info,type) {
+    if(type==0)
+    {
+         $(name).attr("data-content","<span class='glyphicon glyphicon-question-sign' style='color: rgb(255, 0, 0);'>"+info+"</span>");
+         $(name).popover('show');
+    }
+    else
+    {
+        $(name).attr("data-content","<span class='glyphicon glyphicon-ok-sign' style='color: rgb(0, 162, 65);'>"+info+"</span>");
+        $(name).popover('show');
+    }
+}
+</script>
+
